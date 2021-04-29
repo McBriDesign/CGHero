@@ -11,16 +11,33 @@
         <div>
             <div class="error-message">
                 <!-- Display error message here -->
+                <div style="color: red;" id="error">{{ this.error }}</div>
             </div>
 
             <form id="feedback">
-                <input type="radio" v-model="delightedCheck"  value="delighted" required /> Delighted
-                <input type="checkbox" /> Donate<br />
-                <input type="radio" v-model="notDelightedCheck" value="not-delighted" required /> Not delighted
-                <input type="text" v-model="form.reason" /> Reason<br />
+                <input type="radio"
+                       v-model="delighted" 
+                       :value="true"
+                       required />
+                       Delighted
+
+                <input type="checkbox" id="checkbox" v-model="donate" />
+                    Donate <br>    
+
+                <input type="radio"
+                       v-model="delighted"
+                       :value="false"
+                       required />
+                       Not delighted
+
+                <input type="text"
+                       v-model="reason"/> 
+                       Reason <br> 
+
                 <input type="button" value="Submit feedback" v-on:click="validateForm" />
+
             </form>
-            <div style="color: red;" id="error">{{ this.error }}</div>
+            
         </div>
     </div>
     <script>
@@ -29,21 +46,39 @@
         var vm = new Vue({
             el: "#app",
             data: {
-                form: {
-                    delightedCheck: false,
-                    notDelightedCheck: false, 
-                    reason: ""
-                },
+                delighted: false,
+                donate: false,
+                reason: "",
                 error: ""
             },
             methods: {
                 validateForm() {
-                    if (this.form.delightedCheck === true && this.form.reason.length === 0) {
-                        this.error = "RULE 2 BROKEN"
+
+                    let delighted = this.delighted
+                    let donate = this.donate 
+                    let reason = this.reason
+                    let error = this.error
+
+                    switch (delighted, donate, reason) {
+                        case delighted === false && donate === true:
+                            error = "RULE 1 BROKEN";
+                            break;
+                        case delighted === false && reason.length === 0:
+                            error = "RULE 2 BROKEN";
+                            break;
+                        case delighted === false && donate === true && reason.length === 0:
+                            error = "BOTH RULES BROKEN";
+                            break;
                     }
+
+                    console.log(error)
+
                 }
             }
         });
+
+        console.log(vm.delighted)
+
 
         // setTimeout(() => console.log(document.getElementById("app").innerHTML));
     </script>
